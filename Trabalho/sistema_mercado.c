@@ -25,6 +25,8 @@ int main() {
     int espaco_disponivel;            
     long int excluir_registro;
     int auxiliar_excluir;
+    int editar_registro;
+    int auxiliar_editar = -1;
 
     do {
         system("cls");
@@ -44,14 +46,17 @@ int main() {
         Sleep(75);
         printf("4- Excluir registro\n");
         Sleep(75);
-        printf("5- Sair\n");
+        printf("5- Editar registro\n");
+        Sleep(75);
+        printf("6- Sair\n");
+        Sleep(75);
         printf("Escolha uma dessas opções:\n");
         Sleep(75);
         
         respscanf = scanf("%i", &opcao_menu);
         while(getchar() != '\n');
         
-        if(respscanf != 1 || opcao_menu < 1 || opcao_menu > 5 ) {
+        if(respscanf != 1 || opcao_menu < 1 || opcao_menu > 6 ) {
             printf("\n\nDigite uma das opções, entre 1 e 5 Por favor!\n"); 
             Sleep(2000); 
             continue; 
@@ -360,6 +365,132 @@ int main() {
 
             case 5:
             system("cls");
+
+            if(qt_de_items_cadastrados == 0) {
+                    printf("\nNenhum produto cadastrado no sistema.\n\n");
+                    Sleep(1500); 
+                    break;
+                }
+
+                printf("\n╔═════════════════════════╗\n");
+                Sleep(75);
+                printf("║      EDITAR REGISTRO    ║\n");
+                Sleep(75);
+                printf("╚═════════════════════════╝\n");
+                Sleep(75);
+
+                do{
+                printf("\nQual o ID do produto: ");
+                    respscanf = scanf("%ld", &editar_registro);
+                    while(getchar() != '\n');
+
+                    if(respscanf != 1){
+                        printf("\nDigite um número!!\n");
+                        Sleep(1500); 
+                    }
+                    else if(editar_registro < 0){
+                        respscanf = 0;
+                        printf("\nDigite um número maior que 0!!\n");
+                        Sleep(1500); 
+                    }
+                }while(respscanf == 0);
+
+                    for(int i = 0; i < qt_de_items_cadastrados; i++){
+                        if(editar_registro == items[i].ID){
+                            auxiliar_editar = i;
+                        }
+                    }
+
+                    if(auxiliar_editar >= 0){
+
+                         items[auxiliar_editar].ID = 0;
+
+                        do {
+                        printf("Qual o novo ID: ");
+                        
+                        respscanf = scanf("%ld", &items[auxiliar_editar].ID);
+                        while(getchar() != '\n');
+
+                        if(respscanf != 1){
+                            printf("\nDigite um número!!\n");
+                            Sleep(2000);
+                        }
+                        else if(items[auxiliar_editar].ID <= 0){ 
+                            respscanf = 0;
+                            printf("\nDigite um número maior que 0!!\n");
+                            Sleep(2000);
+                        }
+                    }while(respscanf == 0);
+                    respscanf = 0;
+
+                    memset(items[auxiliar_editar].produto, 101, '\0');
+
+                    printf("\nQual o novo nome do produto: ");
+                    scanf("%[^\n]", items[auxiliar_editar].produto);
+                    while(getchar() != '\n');
+
+                    items[auxiliar_editar].preco = 0;
+
+                    do {
+                            printf("Qual o novo preço: ");
+                            respscanf = scanf("%f", &items[auxiliar_editar].preco);
+                            while(getchar() != '\n');
+
+                            if(respscanf != 1){
+                                printf("\nDigite um número!!\n");
+                                Sleep(1500); 
+                            }
+                            else if(items[auxiliar_editar].preco < 0){
+                                respscanf = 0;
+                                printf("\nDigite um número maior que 0!!\n");
+                                Sleep(1500); 
+                            }
+                        } while(respscanf == 0);
+                        respscanf = 0;
+
+                        items[auxiliar_editar].peso = 0;
+
+                         do {
+                            printf("Qual o novo peso em gramas: ");
+                            respscanf = scanf("%f", &items[auxiliar_editar].peso);
+                            while(getchar() != '\n');
+
+                            if(respscanf != 1){
+                                printf("\nDigite um número!!\n");
+                                Sleep(1500); 
+                            }
+                            else if(items[auxiliar_editar].peso < 0){
+                                respscanf = 0;
+                                printf("\nDigite um número maior que 0!!\n");
+                                Sleep(1000);
+                            }
+                            printf("\nProduto cadastrado com sucesso\n");
+                            printf("Voltando para o Menu Principal!\n");
+                            Sleep(2000);
+                        printf("\nPressione ENTER para voltar ao menu principal...");
+                        getchar();
+
+                        } while(respscanf == 0);
+                        respscanf = 0;
+                    }else{
+                    printf("\nProduto não encontrado!\n");
+                    printf("Voltando para o Menu Principal!\n");
+                    Sleep(2000);
+                printf("\nPressione ENTER para voltar ao menu principal...");
+                getchar();
+                    
+                    }
+                    
+                    break;
+
+
+
+
+
+
+
+            case 6:
+            system("cls");
                 printf("\nS "); Sleep(200);
                 printf("A "); Sleep(200);
                 printf("I "); Sleep(200);
@@ -368,7 +499,7 @@ int main() {
                 printf("O..."); Sleep(1000);
                 break;
         }
-    } while(opcao_menu != 5); 
+    } while(opcao_menu != 6); 
 
     return 0;
 }

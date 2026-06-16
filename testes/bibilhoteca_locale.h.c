@@ -1,14 +1,11 @@
 #include <stdio.h>
-#include <locale.h>
+#include <windows.h> // Adicione esta biblioteca
 
 int main() {
-char nome[101];
+    // Configura o terminal do Windows para aceitar UTF-8 (código 65001)
+    SetConsoleOutputCP(CP_UTF8);
 
-printf("Entre com o seu nome: ");
-fgets(nome, 101, stdin);
-
-printf("\n\n%s", nome);
-
+    printf("Olá, mundo! Acentuação funcionando.\n");
 
     return 0;
 }

@@ -1,0 +1,21 @@
+
+================================
+Produto [1]
+ID: 1
+Nome: biscoito
+Pre√ßo: 2.50 R$
+Peso: 250.00 g
+
+================================
+Produto [2]
+ID: 2
+Nome: macar∆o
+Pre√ßo: 5.00 R$
+Peso: 600.00 g
+
+================================
+Produto [3]
+ID: 3
+Nome: p∆o
+Pre√ßo: 5.00 R$
+Peso: 2.50 Kg

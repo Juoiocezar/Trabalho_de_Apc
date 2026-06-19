@@ -1,16 +1,7 @@
 #include <stdio.h>
+#include <windows.h>
 #include <string.h>
 #include <stdlib.h>
-
-#ifdef _WIN32
-#include <windows.h>
-#define SLEEP(ms) Sleep(ms)
-#define CLEAR "cls"
-#else
-#include <unistd.h>
-#define SLEEP(ms) usleep((ms) * 1000)
-#define CLEAR "clear"
-#endif
 
 struct
 {
@@ -22,6 +13,9 @@ struct
 
 int main()
 {
+
+    SetConsoleOutputCP(CP_UTF8);
+
     int opcao_menu;
     int qt_items_a_cadastrar;
     long int copia_ID;
@@ -29,39 +23,47 @@ int main()
     int suporte = 0;
     int respscanf = 0;
     long int busca_produto = 0;
-    int auxiliar_busca;
+    int auxiliar_busca = -1;
     int espaco_disponivel;
     long int excluir_registro;
     int auxiliar_excluir;
-    long int editar_registro;
+    int editar_registro;
+    int auxiliar_editar = -1;
 
     do
     {
-        system(CLEAR);
-
+        system("cls");
         printf("\n╔═══════════════════╗\n");
-        SLEEP(75);
+        Sleep(75);
         printf("║       MENU        ║\n");
-        SLEEP(75);
+        Sleep(75);
         printf("╚═══════════════════╝\n");
-        SLEEP(75);
-
+        Sleep(75);
         printf("1- Cadastrar registro\n");
+        Sleep(75);
         printf("(Cadastros -> %i/10)\n", qt_de_items_cadastrados);
+        Sleep(75);
         printf("2- Listar registros\n");
+        Sleep(75);
         printf("3- Localizar registro\n");
+        Sleep(75);
         printf("4- Excluir registro\n");
+        Sleep(75);
         printf("5- Editar registro\n");
+        Sleep(75);
         printf("6- Sair\n");
-        printf("Escolha uma opção:\n");
+        Sleep(75);
+        printf("Escolha uma dessas opções:\n");
+        Sleep(75);
 
         respscanf = scanf("%i", &opcao_menu);
-        while (getchar() != '\n');
+        while (getchar() != '\n')
+            ;
 
         if (respscanf != 1 || opcao_menu < 1 || opcao_menu > 6)
         {
-            printf("\nOpção inválida!\n");
-            SLEEP(1500);
+            printf("\n\nDigite uma das opções, entre 1 e 5 Por favor!\n");
+            Sleep(2000);
             continue;
         }
 
@@ -69,199 +71,513 @@ int main()
         {
 
         case 1:
-        {
-            system(CLEAR);
+            system("cls");
             espaco_disponivel = 10 - qt_de_items_cadastrados;
 
-            printf("\nCADASTRO\n");
+            printf("\n╔═════════════════════════╗\n");
+            Sleep(75);
+            printf("║    MENU DE CADASTRO     ║\n");
+            Sleep(75);
+            printf("╚═════════════════════════╝\n");
+            Sleep(75);
 
-            if (qt_de_items_cadastrados >= 10)
+            if (qt_de_items_cadastrados < 10)
             {
-                printf("Sistema cheio!\n");
-                SLEEP(1500);
-                break;
-            }
 
-            printf("Você pode cadastrar até %d itens\n", espaco_disponivel);
+                printf("\nPodem ser cadastrados mais apenas %d produto(s)\n", espaco_disponivel);
+                Sleep(1500);
 
-            do
-            {
-                printf("Quantos itens deseja cadastrar: ");
-                respscanf = scanf("%d", &qt_items_a_cadastrar);
-                while (getchar() != '\n');
-
-                if (respscanf != 1 || qt_items_a_cadastrar <= 0 || qt_items_a_cadastrar > espaco_disponivel)
+                do
                 {
-                    printf("Valor inválido!\n");
+                    printf("\nQuantos itens deseja cadastrar: ");
+                    respscanf = scanf("%d", &qt_items_a_cadastrar);
+                    while (getchar() != '\n')
+                        ;
+
+                    if (respscanf != 1)
+                    {
+                        printf("\nDigite um número!!\n");
+                        Sleep(2000);
+                    }
+                    else if (qt_items_a_cadastrar <= 0)
+                    {
+                        respscanf = 0;
+                        printf("\nDigite um número maior que 0!!\n");
+                        Sleep(2000);
+                    }
+                    else if (qt_items_a_cadastrar > espaco_disponivel)
+                    {
+                        respscanf = 0;
+                        printf("\nNão é possivel cadastrar essa quantidade de itens!!\n");
+                        printf("Você só pode cadastrar mais %i produtos\n", espaco_disponivel);
+                        Sleep(2000);
+                    }
+                } while (respscanf == 0);
+
+                respscanf = 0;
+
+                for (int i = 0; i < qt_items_a_cadastrar; i++)
+                {
+
+                    suporte = 0;
+
+                    printf("\n----- Cadastrando produto [%i] ----- \n", qt_de_items_cadastrados + 1);
+                    Sleep(75);
+
+                    do
+                    {
+                        printf("Qual o ID: ");
+                        respscanf = scanf("%ld", &copia_ID);
+                        while (getchar() != '\n')
+                            ;
+
+                        if (respscanf != 1)
+                        {
+                            printf("\nDigite um número!!\n");
+                            Sleep(1500);
+                        }
+                        else if (copia_ID < 0)
+                        {
+                            respscanf = 0;
+                            printf("\nDigite um número maior que 0!!\n");
+                            Sleep(1500);
+                        }
+                    } while (respscanf == 0);
                     respscanf = 0;
+
+                    for (int j = 0; j < qt_de_items_cadastrados; j++)
+                    {
+                        if (copia_ID == items[j].ID)
+                        {
+                            suporte++;
+                            break;
+                        }
+                    }
+
+                    if (suporte > 0)
+                    {
+                        printf("\nEste ID ja foi cadastrado!!\n");
+                        printf("Cancelando este e voltando para o menu.\n");
+                        Sleep(2000);
+                        break;
+                    }
+                    else
+                    {
+                        items[qt_de_items_cadastrados].ID = copia_ID;
+                    }
+
+                    printf("Qual o nome do produto: ");
+                    scanf("%[^\n]", items[qt_de_items_cadastrados].produto);
+                    while (getchar() != '\n')
+                        ;
+
+                    do
+                    {
+                        printf("Qual o preço: ");
+                        respscanf = scanf("%f", &items[qt_de_items_cadastrados].preco);
+                        while (getchar() != '\n')
+                            ;
+
+                        if (respscanf != 1)
+                        {
+                            printf("\nDigite um número!!\n");
+                            Sleep(1500);
+                        }
+                        else if (items[qt_de_items_cadastrados].preco < 0)
+                        {
+                            respscanf = 0;
+                            printf("\nDigite um número maior que 0!!\n");
+                            Sleep(1500);
+                        }
+                    } while (respscanf == 0);
+                    respscanf = 0;
+
+                    do
+                    {
+                        printf("Qual o peso em gramas: ");
+                        respscanf = scanf("%f", &items[qt_de_items_cadastrados].peso);
+                        while (getchar() != '\n')
+                            ;
+
+                        if (respscanf != 1)
+                        {
+                            printf("\nDigite um número!!\n");
+                            Sleep(1500);
+                        }
+                        else if (items[qt_de_items_cadastrados].peso < 0)
+                        {
+                            respscanf = 0;
+                            printf("\nDigite um número maior que 0!!\n");
+                            Sleep(1500);
+                        }
+                    } while (respscanf == 0);
+                    respscanf = 0;
+
+                    qt_de_items_cadastrados++;
                 }
-
-            } while (respscanf == 0);
-
-            for (int i = 0; i < qt_items_a_cadastrar; i++)
+            }
+            else
             {
-                printf("\nProduto %d\n", qt_de_items_cadastrados + 1);
-
-                do
-                {
-                    printf("ID: ");
-                    respscanf = scanf("%ld", &copia_ID);
-                    while (getchar() != '\n');
-                } while (respscanf != 1 || copia_ID <= 0);
-
-                suporte = 0;
-                for (int j = 0; j < qt_de_items_cadastrados; j++)
-                {
-                    if (items[j].ID == copia_ID)
-                        suporte = 1;
-                }
-
-                if (suporte)
-                {
-                    printf("ID duplicado!\n");
-                    continue;
-                }
-
-                items[qt_de_items_cadastrados].ID = copia_ID;
-
-                printf("Nome: ");
-                scanf(" %100[^\n]", items[qt_de_items_cadastrados].produto);
-                while (getchar() != '\n');
-
-                do
-                {
-                    printf("Preço: ");
-                    respscanf = scanf("%f", &items[qt_de_items_cadastrados].preco);
-                    while (getchar() != '\n');
-                } while (respscanf != 1 || items[qt_de_items_cadastrados].preco < 0);
-
-                do
-                {
-                    printf("Peso (g): ");
-                    respscanf = scanf("%f", &items[qt_de_items_cadastrados].peso);
-                    while (getchar() != '\n');
-                } while (respscanf != 1 || items[qt_de_items_cadastrados].peso < 0);
-
-                qt_de_items_cadastrados++;
+                printf("\nO sistema está cheio!!\n");
+                Sleep(2000);
             }
             break;
-        }
 
         case 2:
-            system(CLEAR);
-            printf("\nLISTA\n");
+            system("cls");
+            printf("\n╔═════════════════════════╗\n");
+            Sleep(75);
+            printf("║   LISTA DE REGISTROS    ║\n");
+            Sleep(75);
+            printf("╚═════════════════════════╝\n");
+            Sleep(75);
 
             if (qt_de_items_cadastrados == 0)
             {
-                printf("Nenhum produto.\n");
-                SLEEP(1000);
-                break;
+                printf("\nNenhum produto cadastrado ainda.\n\n");
+                Sleep(1500);
             }
-
             for (int i = 0; i < qt_de_items_cadastrados; i++)
             {
-                printf("\nID: %ld", items[i].ID);
-                printf("\nNome: %s", items[i].produto);
-                printf("\nPreço: %.2f", items[i].preco);
-
+                printf("\n================================\n");
+                Sleep(75);
+                printf("Produto [%i]\n", i + 1);
+                Sleep(75);
+                printf("ID: %li\n", items[i].ID);
+                Sleep(75);
+                printf("Nome: %s\n", items[i].produto);
+                Sleep(75);
+                printf("Preço: %.2f R$\n", items[i].preco);
+                Sleep(75);
+                printf("Peso: ");
+                Sleep(75);
                 if (items[i].peso > 999)
-                    printf("\nPeso: %.2f kg\n", items[i].peso / 1000);
+                {
+                    printf("%.2f Kg\n", items[i].peso / 1000.0);
+                }
                 else
-                    printf("\nPeso: %.2f g\n", items[i].peso);
+                {
+                    printf("%.2f g\n", items[i].peso);
+                }
+                Sleep(75);
             }
-
+            printf("\nPressione ENTER para voltar ao menu principal...");
             getchar();
             break;
 
         case 3:
-        {
-            printf("ID busca: ");
-            scanf("%ld", &busca_produto);
+            system("cls");
+            printf("\n╔═════════════════════════╗\n");
+            Sleep(75);
+            printf("║   LOCALIZAR REGISTRO    ║\n");
+            Sleep(75);
+            printf("╚═════════════════════════╝\n");
+            Sleep(75);
 
-            auxiliar_busca = -1;
-
-            for (int i = 0; i < qt_de_items_cadastrados; i++)
-                if (items[i].ID == busca_produto)
-                    auxiliar_busca = i;
-
-            if (auxiliar_busca == -1)
+            if (qt_de_items_cadastrados == 0)
             {
-                printf("Não encontrado\n");
-            }
-            else
-            {
-                printf("Encontrado: %s\n", items[auxiliar_busca].produto);
-            }
-
-            getchar();
-            break;
-        }
-
-        case 4:
-        {
-            printf("ID excluir: ");
-            scanf("%ld", &excluir_registro);
-
-            auxiliar_excluir = -1;
-
-            for (int i = 0; i < qt_de_items_cadastrados; i++)
-                if (items[i].ID == excluir_registro)
-                    auxiliar_excluir = i;
-
-            if (auxiliar_excluir == -1)
-            {
-                printf("Não encontrado\n");
-            }
-            else
-            {
-                for (int j = auxiliar_excluir; j < qt_de_items_cadastrados - 1; j++)
-                    items[j] = items[j + 1];
-
-                qt_de_items_cadastrados--;
-                printf("Removido!\n");
-            }
-
-            getchar();
-            break;
-        }
-
-        case 5:
-        {
-            printf("ID editar: ");
-            scanf("%ld", &editar_registro);
-
-            int idx = -1;
-
-            for (int i = 0; i < qt_de_items_cadastrados; i++)
-                if (items[i].ID == editar_registro)
-                    idx = i;
-
-            if (idx == -1)
-            {
-                printf("Não encontrado\n");
+                printf("\nNenhum produto cadastrado no sistema.\n\n");
+                Sleep(1500);
                 break;
             }
 
-            printf("Novo nome: ");
-            scanf(" %100[^\n]", items[idx].produto);
-            while (getchar() != '\n');
+            do
+            {
+                printf("\nQual o ID do produto: ");
+                respscanf = scanf("%ld", &busca_produto);
+                while (getchar() != '\n')
+                    ;
 
-            printf("Novo preço: ");
-            scanf("%f", &items[idx].preco);
+                if (respscanf != 1)
+                {
+                    printf("\nDigite um número!!\n");
+                    Sleep(1500);
+                }
+                else if (busca_produto < 0)
+                {
+                    respscanf = 0;
+                    printf("\nDigite um número maior que 0!!\n");
+                    Sleep(1500);
+                }
+            } while (respscanf == 0);
 
-            printf("Novo peso: ");
-            scanf("%f", &items[idx].peso);
+            auxiliar_busca = -1;
+            for (int i = 0; i < qt_de_items_cadastrados; i++)
+            {
+                if (busca_produto == items[i].ID)
+                {
+                    auxiliar_busca = i;
+                    break;
+                }
+            }
 
-            printf("Atualizado!\n");
-            getchar();
+            if (auxiliar_busca >= 0)
+            {
+                printf("\nProduto encontrado");
+                Sleep(75);
+                printf("\n================================\n");
+                Sleep(75);
+                printf("ID: %li\n", items[auxiliar_busca].ID);
+                Sleep(75);
+                printf("Nome: %s\n", items[auxiliar_busca].produto);
+                Sleep(75);
+                printf("Preço: %.2f R$\n", items[auxiliar_busca].preco);
+                Sleep(75);
+                printf("Peso: ");
+                Sleep(75);
+                if (items[auxiliar_busca].peso > 999)
+                {
+                    printf("%.2f Kg\n", items[auxiliar_busca].peso / 1000.0);
+                }
+                else
+                {
+                    printf("%.2f g\n", items[auxiliar_busca].peso);
+                }
+                Sleep(75);
+
+                printf("\nPressione ENTER para voltar ao menu principal...");
+                getchar();
+            }
+            else
+            {
+                printf("\nProduto não encontrado!\n");
+                printf("Voltando para o Menu Principal!\n");
+                Sleep(2000);
+
+                printf("\nPressione ENTER para voltar ao menu principal...");
+                getchar();
+            }
+
             break;
-        }
+
+        case 4:
+            system("cls");
+            printf("\n╔═════════════════════════╗\n");
+            Sleep(75);
+            printf("║   EXCLUIR REGISTRO      ║\n");
+            Sleep(75);
+            printf("╚═════════════════════════╝\n");
+            Sleep(75);
+
+            if (qt_de_items_cadastrados == 0)
+            {
+                printf("\nNenhum produto cadastrado no sistema.\n\n");
+                Sleep(1500);
+                break;
+            }
+
+            do
+            {
+                printf("\nQual o ID do produto: ");
+                respscanf = scanf("%ld", &excluir_registro);
+                while (getchar() != '\n')
+                    ;
+
+                if (respscanf != 1)
+                {
+                    printf("\nDigite um número!!\n");
+                    Sleep(1500);
+                }
+                else if (excluir_registro < 0)
+                {
+                    respscanf = 0;
+                    printf("\nDigite um número maior que 0!!\n");
+                    Sleep(1500);
+                }
+            } while (respscanf == 0);
+
+            auxiliar_excluir = -1;
+            for (int i = 0; i < qt_de_items_cadastrados; i++)
+            {
+                if (excluir_registro == items[i].ID)
+                {
+                    auxiliar_excluir = i;
+                    break;
+                }
+            }
+
+            if (auxiliar_excluir >= 0)
+            {
+
+                for (int j = auxiliar_excluir; j < qt_de_items_cadastrados - 1; j++)
+                {
+                    items[j] = items[j + 1];
+                }
+
+                qt_de_items_cadastrados--;
+                printf("\nRegistro excluido com sucesso!!\n");
+                Sleep(1500);
+                printf("\nPressione ENTER para voltar ao menu principal...");
+                getchar();
+            }
+            else
+            {
+                printf("\nProduto não encontrado!\n");
+                printf("Voltando para o Menu Principal!\n");
+                Sleep(2000);
+                printf("\nPressione ENTER para voltar ao menu principal...");
+                getchar();
+            }
+            break;
+
+        case 5:
+            system("cls");
+
+            if (qt_de_items_cadastrados == 0)
+            {
+                printf("\nNenhum produto cadastrado no sistema.\n\n");
+                Sleep(1500);
+                break;
+            }
+
+            printf("\n╔═════════════════════════╗\n");
+            Sleep(75);
+            printf("║      EDITAR REGISTRO    ║\n");
+            Sleep(75);
+            printf("╚═════════════════════════╝\n");
+            Sleep(75);
+
+            do
+            {
+                printf("\nQual o ID do produto: ");
+                respscanf = scanf("%ld", &editar_registro);
+                while (getchar() != '\n')
+                    ;
+
+                if (respscanf != 1)
+                {
+                    printf("\nDigite um número!!\n");
+                    Sleep(1500);
+                }
+                else if (editar_registro < 0)
+                {
+                    respscanf = 0;
+                    printf("\nDigite um número maior que 0!!\n");
+                    Sleep(1500);
+                }
+            } while (respscanf == 0);
+
+            for (int i = 0; i < qt_de_items_cadastrados; i++)
+            {
+                if (editar_registro == items[i].ID)
+                {
+                    auxiliar_editar = i;
+                }
+            }
+
+            if (auxiliar_editar >= 0)
+            {
+
+                items[auxiliar_editar].ID = 0;
+
+                do
+                {
+                    printf("Qual o novo ID: ");
+
+                    respscanf = scanf("%ld", &items[auxiliar_editar].ID);
+                    while (getchar() != '\n')
+                        ;
+
+                    if (respscanf != 1)
+                    {
+                        printf("\nDigite um número!!\n");
+                        Sleep(2000);
+                    }
+                    else if (items[auxiliar_editar].ID <= 0)
+                    {
+                        respscanf = 0;
+                        printf("\nDigite um número maior que 0!!\n");
+                        Sleep(2000);
+                    }
+                } while (respscanf == 0);
+                respscanf = 0;
+
+                memset(items[auxiliar_editar].produto, 101, '\0');
+
+                printf("\nQual o novo nome do produto: ");
+                scanf("%[^\n]", items[auxiliar_editar].produto);
+                while (getchar() != '\n')
+                    ;
+
+                items[auxiliar_editar].preco = 0;
+
+                do
+                {
+                    printf("Qual o novo preço: ");
+                    respscanf = scanf("%f", &items[auxiliar_editar].preco);
+                    while (getchar() != '\n')
+                        ;
+
+                    if (respscanf != 1)
+                    {
+                        printf("\nDigite um número!!\n");
+                        Sleep(1500);
+                    }
+                    else if (items[auxiliar_editar].preco < 0)
+                    {
+                        respscanf = 0;
+                        printf("\nDigite um número maior que 0!!\n");
+                        Sleep(1500);
+                    }
+                } while (respscanf == 0);
+                respscanf = 0;
+
+                items[auxiliar_editar].peso = 0;
+
+                do
+                {
+                    printf("Qual o novo peso em gramas: ");
+                    respscanf = scanf("%f", &items[auxiliar_editar].peso);
+                    while (getchar() != '\n')
+                        ;
+
+                    if (respscanf != 1)
+                    {
+                        printf("\nDigite um número!!\n");
+                        Sleep(1500);
+                    }
+                    else if (items[auxiliar_editar].peso < 0)
+                    {
+                        respscanf = 0;
+                        printf("\nDigite um número maior que 0!!\n");
+                        Sleep(1000);
+                    }
+                    printf("\nProduto cadastrado com sucesso\n");
+                    printf("Voltando para o Menu Principal!\n");
+                    Sleep(2000);
+                    printf("\nPressione ENTER para voltar ao menu principal...");
+                    getchar();
+
+                } while (respscanf == 0);
+                respscanf = 0;
+            }
+            else
+            {
+                printf("\nProduto não encontrado!\n");
+                printf("Voltando para o Menu Principal!\n");
+                Sleep(2000);
+                printf("\nPressione ENTER para voltar ao menu principal...");
+                getchar();
+            }
+
+            break;
 
         case 6:
-            printf("Saindo...\n");
+            system("cls");
+            printf("\nS ");
+            Sleep(200);
+            printf("A ");
+            Sleep(200);
+            printf("I ");
+            Sleep(200);
+            printf("N ");
+            Sleep(200);
+            printf("D ");
+            Sleep(200);
+            printf("O...");
+            Sleep(1000);
             break;
         }
-
     } while (opcao_menu != 6);
 
     return 0;
